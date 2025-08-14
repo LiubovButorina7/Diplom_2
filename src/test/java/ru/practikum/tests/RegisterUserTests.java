@@ -12,8 +12,6 @@ import org.junit.Test;
 import ru.practikum.config.RestConfig;
 import ru.practikum.models.User;
 import ru.practikum.steps.UserSteps;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class RegisterUserTests extends BaseTest {
@@ -33,7 +31,19 @@ public class RegisterUserTests extends BaseTest {
         setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12)+"@test.ru", RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
         ValidatableResponse response = userSteps.registerUser(user);
         checkCodeResponse(response, HttpStatus.SC_OK);
-        checkBodyResponse(response, RestConfig.KEY_SUCCESS, RestConfig.VALUE_SUCCESS);
+        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_SUCCESS);
+    }
+
+    @Test
+    @DisplayName("Register user that already exists")
+    @Description("Test for '/api/auth/register' endpoint")
+    public void testRegisterUserAlreadyExistingReturnsFailure() {
+        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12)+"@test.ru", RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
+        userSteps.registerUser(user);
+        ValidatableResponse response = userSteps.registerUser(user);
+        checkCodeResponse(response, HttpStatus.SC_FORBIDDEN);
+        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_ERROR);
+        checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_ERROR);
     }
 
     @Step("Set user email, password and name")
