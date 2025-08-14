@@ -43,7 +43,18 @@ public class RegisterUserTests extends BaseTest {
         ValidatableResponse response = userSteps.registerUser(user);
         checkCodeResponse(response, HttpStatus.SC_FORBIDDEN);
         checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_ERROR);
-        checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_ERROR);
+        checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_NOT_UNIQUE_USER);
+    }
+
+    @Test
+    @DisplayName("Register user with password, name and without email")
+    @Description("Test for '/api/auth/register' endpoint")
+    public void testRegisterUserWithPasswordNameAndWithoutEmailReturnsFailure() {
+        setRequestEmailPasswordName(null, RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
+        ValidatableResponse response = userSteps.registerUser(user);
+        checkCodeResponse(response, HttpStatus.SC_FORBIDDEN);
+        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_ERROR);
+        checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_REQUIRED_FIELDS);
     }
 
     @Step("Set user email, password and name")
