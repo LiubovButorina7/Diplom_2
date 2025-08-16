@@ -54,9 +54,9 @@ public class MakeOrderTests extends BaseTest {
     }
 
     @Test
-    @DisplayName("Make order with authorization and with no ingredients")
+    @DisplayName("Make order with authorization and without ingredients")
     @Description("Test for '/api/orders' endpoint")
-    public void testMakeOrderWithAuthorizationAndNoIngredientsReturnsFailure() {
+    public void testMakeOrderWithAuthorizationAndWithoutIngredientsReturnsFailure() {
         user = new User();
         userSteps = new UserSteps();
         setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(6));
@@ -67,6 +67,22 @@ public class MakeOrderTests extends BaseTest {
         ValidatableResponse responseOrder = orderSteps.makeOrder(order, user);
         checkCodeResponse(responseOrder, HttpStatus.SC_BAD_REQUEST);
         checkBodyResponse(responseOrder, RestConfig.KEY_MESSAGE,RestConfig.VALUE_MAKE_ORDER_MESSAGE_NO_INGREDIENTS);
+    }
+
+    @Test
+    @DisplayName("Make order with authorization and incorrect ingredients")
+    @Description("Test for '/api/orders' endpoint")
+    public void testMakeOrderWithAuthorizationAndIncorrectIngredientsReturnsFailure() {
+        user = new User();
+        userSteps = new UserSteps();
+        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(6));
+        userSteps.registerUser(user);
+        ValidatableResponse responseUser = userSteps.loginUser(user);
+        getUserAccessTokenAuthorized(responseUser);
+        setUserAccessToken();
+        setOrderIncorrectIngredients(RandomStringUtils.randomAlphanumeric(8));
+        ValidatableResponse responseOrder = orderSteps.makeOrder(order, user);
+        checkCodeResponse(responseOrder, HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }
 
     @Step("Set user email, password and name")
@@ -101,6 +117,12 @@ public class MakeOrderTests extends BaseTest {
                 count ++;
             }
         }
+        order.setIngredients(ingredients);
+    }
+
+    @Step("Set incorrect ingredients for make order request")
+    public void setOrderIncorrectIngredients(String ingredient) {
+        ingredients.add(ingredient);
         order.setIngredients(ingredients);
     }
 
