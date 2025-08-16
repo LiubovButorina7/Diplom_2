@@ -9,4 +9,5 @@ public class RestConfig {
     public static final String VALUE_REGISTER_MESSAGE_NOT_UNIQUE_USER = "User already exists";
     public static final String VALUE_REGISTER_MESSAGE_REQUIRED_FIELDS = "Email, password and name are required fields";
     public static final String VALUE_LOGIN_MESSAGE_INCORRECT_FIELDS = "email or password are incorrect";
+    public static final String VALUE_MAKE_ORDER_MESSAGE_NO_INGREDIENTS = "Ingredient ids must be provided";
 }

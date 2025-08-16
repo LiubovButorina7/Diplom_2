@@ -53,6 +53,22 @@ public class MakeOrderTests extends BaseTest {
         checkBodyResponse(responseOrder, RestConfig.KEY_SUCCESS,RestConfig.VALUE_SUCCESS);
     }
 
+    @Test
+    @DisplayName("Make order with authorization and with no ingredients")
+    @Description("Test for '/api/orders' endpoint")
+    public void testMakeOrderWithAuthorizationAndNoIngredientsReturnsFailure() {
+        user = new User();
+        userSteps = new UserSteps();
+        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(6));
+        userSteps.registerUser(user);
+        ValidatableResponse responseUser = userSteps.loginUser(user);
+        getUserAccessTokenAuthorized(responseUser);
+        setUserAccessToken();
+        ValidatableResponse responseOrder = orderSteps.makeOrder(order, user);
+        checkCodeResponse(responseOrder, HttpStatus.SC_BAD_REQUEST);
+        checkBodyResponse(responseOrder, RestConfig.KEY_MESSAGE,RestConfig.VALUE_MAKE_ORDER_MESSAGE_NO_INGREDIENTS);
+    }
+
     @Step("Set user email, password and name")
     public void setRequestEmailPasswordName(String email, String password, String name) {
         user.setEmail(email + "@test.ru");
