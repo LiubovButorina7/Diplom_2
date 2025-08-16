@@ -28,21 +28,21 @@ public class RegisterUserTests extends BaseTest {
     @DisplayName("Register unique user")
     @Description("Test for '/api/auth/register' endpoint")
     public void testRegisterUniqueUserReturnsSuccess() {
-        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12)+"@test.ru", RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
+        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
         ValidatableResponse response = userSteps.registerUser(user);
         checkCodeResponse(response, HttpStatus.SC_OK);
-        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_SUCCESS);
+        checkBodyResponse(response, RestConfig.KEY_SUCCESS, RestConfig.VALUE_SUCCESS);
     }
 
     @Test
     @DisplayName("Register user that already exists")
     @Description("Test for '/api/auth/register' endpoint")
     public void testRegisterUserAlreadyExistingReturnsFailure() {
-        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12)+"@test.ru", RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
+        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
         userSteps.registerUser(user);
         ValidatableResponse response = userSteps.registerUser(user);
         checkCodeResponse(response, HttpStatus.SC_FORBIDDEN);
-        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_ERROR);
+        checkBodyResponse(response, RestConfig.KEY_SUCCESS, RestConfig.VALUE_FAILURE);
         checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_NOT_UNIQUE_USER);
     }
 
@@ -53,7 +53,7 @@ public class RegisterUserTests extends BaseTest {
         setRequestEmailPasswordName(null, RandomStringUtils.randomAlphabetic(12),RandomStringUtils.randomAlphabetic(6));
         ValidatableResponse response = userSteps.registerUser(user);
         checkCodeResponse(response, HttpStatus.SC_FORBIDDEN);
-        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_ERROR);
+        checkBodyResponse(response, RestConfig.KEY_SUCCESS, RestConfig.VALUE_FAILURE);
         checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_REQUIRED_FIELDS);
     }
 
@@ -64,7 +64,7 @@ public class RegisterUserTests extends BaseTest {
         setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12),null, RandomStringUtils.randomAlphabetic(6));
         ValidatableResponse response = userSteps.registerUser(user);
         checkCodeResponse(response, HttpStatus.SC_FORBIDDEN);
-        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_ERROR);
+        checkBodyResponse(response, RestConfig.KEY_SUCCESS, RestConfig.VALUE_FAILURE);
         checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_REQUIRED_FIELDS);
     }
 
@@ -75,13 +75,13 @@ public class RegisterUserTests extends BaseTest {
         setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), null);
         ValidatableResponse response = userSteps.registerUser(user);
         checkCodeResponse(response, HttpStatus.SC_FORBIDDEN);
-        checkBodyResponse(response, RestConfig.KEY_REGISTER, RestConfig.VALUE_REGISTER_ERROR);
+        checkBodyResponse(response, RestConfig.KEY_SUCCESS, RestConfig.VALUE_FAILURE);
         checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_REGISTER_MESSAGE_REQUIRED_FIELDS);
     }
 
     @Step("Set user email, password and name")
     public void setRequestEmailPasswordName(String email, String password, String name) {
-        user.setEmail(email);
+        user.setEmail(email != null ? email +"@test.ru" : email);
         user.setPassword(password);
         user.setName(name);
     }

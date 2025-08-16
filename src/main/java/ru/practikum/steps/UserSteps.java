@@ -30,7 +30,7 @@ public class UserSteps {
     public ValidatableResponse deleteUser(User user) {
         return given()
                 .header("Authorization", user.getAccessToken())
-                .body(user)
+                //.body(user)
                 .when()
                 .post(Endpoints.LOGIN_USER)
                 .then();
