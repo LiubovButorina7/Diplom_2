@@ -1,17 +1,20 @@
 package ru.practikum.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     private String email;
     private String password;
     private String name;
     private String accessToken;
 
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getPassword() {
