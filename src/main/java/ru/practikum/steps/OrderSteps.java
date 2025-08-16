@@ -11,7 +11,6 @@ import static io.restassured.RestAssured.given;
 public class OrderSteps {
     @Step("Send POST request with authorization to /api/orders")
     public ValidatableResponse makeOrder(Order order, User user) {
-        System.out.println("Yy!");
         return given()
                 .header("Authorization", user.getAccessToken())
                 .body(order)

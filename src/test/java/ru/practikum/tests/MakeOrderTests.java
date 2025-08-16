@@ -85,6 +85,17 @@ public class MakeOrderTests extends BaseTest {
         checkCodeResponse(responseOrder, HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }
 
+    @Test
+    @DisplayName("Make order without authorization and with ingredients")
+    @Description("Test for '/api/orders' endpoint")
+    public void testMakeOrderWithoutAuthorizationAndWithIngredientsReturnsFailure() {
+        ValidatableResponse responseIngredients = orderSteps.getIngredients();
+        setOrderIngredients(responseIngredients);
+        ValidatableResponse responseOrder = orderSteps.makeOrder(order);
+        checkCodeResponse(responseOrder, HttpStatus.SC_UNAUTHORIZED);
+        checkBodyResponse(responseOrder, RestConfig.KEY_SUCCESS,RestConfig.VALUE_FAILURE);
+    }
+
     @Step("Set user email, password and name")
     public void setRequestEmailPasswordName(String email, String password, String name) {
         user.setEmail(email + "@test.ru");
