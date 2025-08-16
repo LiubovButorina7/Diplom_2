@@ -31,17 +31,28 @@ public class LoginUserTests extends BaseTest{
     @Test
     @DisplayName("Login user with existing email and password")
     @Description("Test for '/api/auth/login' endpoint")
-    public void testLoginUserWithExistingLoginAndPasswordReturnsSuccess() {
+    public void testLoginUserWithExistingEmailAndPasswordReturnsSuccess() {
         ValidatableResponse response = userSteps.loginUser(user);
         checkCodeResponse(response, HttpStatus.SC_OK);
         checkBodyResponse(response, RestConfig.KEY_SUCCESS,RestConfig.VALUE_SUCCESS);
     }
 
     @Test
-    @DisplayName("Login user with existing email and password")
+    @DisplayName("Login user with incorrect email and existing password")
     @Description("Test for '/api/auth/login' endpoint")
-    public void testLoginUserWithIncorrectLoginAndExistingPasswordReturnsFailure() {
-        user.setEmail(RandomStringUtils.randomAlphabetic(12) + "@test.ru");
+    public void testLoginUserWithIncorrectEmailAndExistingPasswordReturnsFailure() {
+        setRequestIncorrectEmail(RandomStringUtils.randomAlphabetic(12));
+        ValidatableResponse response = userSteps.loginUser(user);
+        checkCodeResponse(response, HttpStatus.SC_UNAUTHORIZED);
+        checkBodyResponse(response, RestConfig.KEY_SUCCESS,RestConfig.VALUE_FAILURE);
+        checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_LOGIN_MESSAGE_INCORRECT_FIELDS);
+    }
+
+    @Test
+    @DisplayName("Login user with existing email and incorrect password")
+    @Description("Test for '/api/auth/login' endpoint")
+    public void testLoginUserWithExistingEmailAndIncorrectPasswordReturnsFailure() {
+        setRequestIncorrectPassword(RandomStringUtils.randomAlphabetic(12));
         ValidatableResponse response = userSteps.loginUser(user);
         checkCodeResponse(response, HttpStatus.SC_UNAUTHORIZED);
         checkBodyResponse(response, RestConfig.KEY_SUCCESS,RestConfig.VALUE_FAILURE);
@@ -53,6 +64,16 @@ public class LoginUserTests extends BaseTest{
         user.setEmail(email != null ? email + "@test.ru" : email);
         user.setPassword(password);
         user.setName(name);
+    }
+
+    @Step("Set user incorrect email")
+    public void setRequestIncorrectEmail(String email) {
+        user.setEmail(email != null ? email + "@test.ru" : email);
+    }
+
+    @Step("Set user incorrect password")
+    public void setRequestIncorrectPassword(String password) {
+        user.setPassword(password);
     }
 
     @Step("Get authorized accessToken")
