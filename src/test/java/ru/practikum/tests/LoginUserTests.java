@@ -37,9 +37,20 @@ public class LoginUserTests extends BaseTest{
         checkBodyResponse(response, RestConfig.KEY_SUCCESS,RestConfig.VALUE_SUCCESS);
     }
 
+    @Test
+    @DisplayName("Login user with existing email and password")
+    @Description("Test for '/api/auth/login' endpoint")
+    public void testLoginUserWithIncorrectLoginAndExistingPasswordReturnsFailure() {
+        user.setEmail(RandomStringUtils.randomAlphabetic(12) + "@test.ru");
+        ValidatableResponse response = userSteps.loginUser(user);
+        checkCodeResponse(response, HttpStatus.SC_UNAUTHORIZED);
+        checkBodyResponse(response, RestConfig.KEY_SUCCESS,RestConfig.VALUE_FAILURE);
+        checkBodyResponse(response, RestConfig.KEY_MESSAGE, RestConfig.VALUE_LOGIN_MESSAGE_INCORRECT_FIELDS);
+    }
+
     @Step("Set user email, password and name")
     public void setRequestEmailPasswordName(String email, String password, String name) {
-        user.setEmail(email != null ? email +"@test.ru" : email);
+        user.setEmail(email != null ? email + "@test.ru" : email);
         user.setPassword(password);
         user.setName(name);
     }
