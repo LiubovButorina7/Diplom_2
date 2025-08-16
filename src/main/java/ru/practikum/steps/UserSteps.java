@@ -27,12 +27,11 @@ public class UserSteps {
     }
 
     @Step("Send DELETE request to /api/auth/user")
-    public ValidatableResponse deleteUser(User user) {
-        return given()
-                .header("Authorization", user.getAccessToken())
-                //.body(user)
-                .when()
-                .post(Endpoints.LOGIN_USER)
-                .then();
+    public void deleteUser(User user) {
+        given()
+            .header("Authorization", user.getAccessToken())
+            .when()
+            .post(Endpoints.DELETE_USER)
+            .then();
     }
 }
