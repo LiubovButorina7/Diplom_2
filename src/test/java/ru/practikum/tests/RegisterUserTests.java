@@ -12,7 +12,6 @@ import org.junit.Test;
 import ru.practikum.config.RestConfig;
 import ru.practikum.models.User;
 import ru.practikum.steps.UserSteps;
-import static org.hamcrest.Matchers.is;
 
 public class RegisterUserTests extends BaseTest {
     private final UserSteps userSteps = new UserSteps();
@@ -84,16 +83,6 @@ public class RegisterUserTests extends BaseTest {
         user.setEmail(email != null ? email +"@test.ru" : email);
         user.setPassword(password);
         user.setName(name);
-    }
-
-    @Step("Check code response")
-    public void checkCodeResponse(ValidatableResponse response, Integer expectedCode) {
-        response.statusCode(expectedCode);
-    }
-
-    @Step("Check body response")
-    public void checkBodyResponse(ValidatableResponse response, String key, Object value) {
-        response.body(key, is(value));
     }
 
     @Step("Get accessToken from authorized user")

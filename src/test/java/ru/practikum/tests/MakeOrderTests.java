@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.is;
-
 public class MakeOrderTests extends BaseTest {
     private Order order;
     private User user;
@@ -95,7 +93,7 @@ public class MakeOrderTests extends BaseTest {
         userAccessTokenAuthorized = response.extract().body().path("accessToken");
     }
 
-    @Step("Set accessToken for make order with authorization request")
+    @Step("Set accessToken")
     public void setUserAccessToken() {
         user.setAccessToken(userAccessTokenAuthorized);
     }
@@ -124,19 +122,9 @@ public class MakeOrderTests extends BaseTest {
         order.setIngredients(ingredients);
     }
 
-    @Step("Check code response")
-    public void checkCodeResponse(ValidatableResponse response, Integer expectedCode) {
-        response.statusCode(expectedCode);
-    }
-
-    @Step("Check body response")
-    public void checkBodyResponse(ValidatableResponse response, String key, Object value) {
-        response.body(key, is(value));
-    }
-
     @After
     public void tearDown() {
-        if (userAccessTokenAuthorized != null) {
+        if (user.getAccessToken() != null) {
             userSteps.deleteUser(user);
         }
     }

@@ -13,8 +13,6 @@ import ru.practikum.config.RestConfig;
 import ru.practikum.models.User;
 import ru.practikum.steps.UserSteps;
 
-import static org.hamcrest.Matchers.is;
-
 public class LoginUserTests extends BaseTest{
     private final UserSteps userSteps = new UserSteps();
     private User user;
@@ -79,16 +77,6 @@ public class LoginUserTests extends BaseTest{
     @Step("Get authorized accessToken")
     public void getUserAccessTokenAuthorized(ValidatableResponse response) {
         userAccessTokenAuthorized = response.extract().body().path("accessToken");
-    }
-
-    @Step("Check code response")
-    public void checkCodeResponse(ValidatableResponse response, Integer expectedCode) {
-        response.statusCode(expectedCode);
-    }
-
-    @Step("Check body response")
-    public void checkBodyResponse(ValidatableResponse response, String key, Object value) {
-        response.body(key, is(value));
     }
 
     @Step("Set accessToken for delete request")
