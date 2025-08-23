@@ -33,12 +33,7 @@ public class MakeOrderTests extends BaseTest {
     public void setUp() {
         order = new Order();
         ingredients = new ArrayList<>();
-    }
 
-    @Test
-    @DisplayName("Make order with authorization and ingredients")
-    @Description("Test for '/api/orders' endpoint")
-    public void testMakeOrderWithAuthorizationAndIngredientsReturnsSuccess() {
         user = new User();
         userSteps = new UserSteps();
         setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(6));
@@ -46,6 +41,12 @@ public class MakeOrderTests extends BaseTest {
         ValidatableResponse responseUser = userSteps.loginUser(user);
         getUserAccessTokenAuthorized(responseUser);
         setUserAccessToken();
+    }
+
+    @Test
+    @DisplayName("Make order with authorization and ingredients")
+    @Description("Test for '/api/orders' endpoint")
+    public void testMakeOrderWithAuthorizationAndIngredientsReturnsSuccess() {
         ValidatableResponse responseIngredients = orderSteps.getIngredients();
         setOrderIngredients(responseIngredients);
         ValidatableResponse responseOrder = orderSteps.makeOrder(order, user);
@@ -57,13 +58,6 @@ public class MakeOrderTests extends BaseTest {
     @DisplayName("Make order with authorization and without ingredients")
     @Description("Test for '/api/orders' endpoint")
     public void testMakeOrderWithAuthorizationAndWithoutIngredientsReturnsFailure() {
-        user = new User();
-        userSteps = new UserSteps();
-        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(6));
-        userSteps.registerUser(user);
-        ValidatableResponse responseUser = userSteps.loginUser(user);
-        getUserAccessTokenAuthorized(responseUser);
-        setUserAccessToken();
         ValidatableResponse responseOrder = orderSteps.makeOrder(order, user);
         checkCodeResponse(responseOrder, HttpStatus.SC_BAD_REQUEST);
         checkBodyResponse(responseOrder, RestConfig.KEY_MESSAGE,RestConfig.VALUE_MAKE_ORDER_MESSAGE_NO_INGREDIENTS);
@@ -73,13 +67,6 @@ public class MakeOrderTests extends BaseTest {
     @DisplayName("Make order with authorization and incorrect ingredients")
     @Description("Test for '/api/orders' endpoint")
     public void testMakeOrderWithAuthorizationAndIncorrectIngredientsReturnsFailure() {
-        user = new User();
-        userSteps = new UserSteps();
-        setRequestEmailPasswordName(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(6));
-        userSteps.registerUser(user);
-        ValidatableResponse responseUser = userSteps.loginUser(user);
-        getUserAccessTokenAuthorized(responseUser);
-        setUserAccessToken();
         setOrderIncorrectIngredients(RandomStringUtils.randomAlphanumeric(8));
         ValidatableResponse responseOrder = orderSteps.makeOrder(order, user);
         checkCodeResponse(responseOrder, HttpStatus.SC_INTERNAL_SERVER_ERROR);
